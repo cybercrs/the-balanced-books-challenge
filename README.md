@@ -51,16 +51,12 @@ python -m unittest discover -s tests -v
 python -m py_compile streamlit_app.py balanced_books/*.py
 ```
 
-## GitHub and Streamlit Community Cloud
+## Deployment
 
-The repository is ready for a standard GitHub-to-Streamlit deployment:
+- **Live app:** [the-balanced-books-challenge.streamlit.app](https://the-balanced-books-challenge.streamlit.app/)
+- **Source:** [github.com/cybercrs/the-balanced-books-challenge](https://github.com/cybercrs/the-balanced-books-challenge)
 
-1. Create a GitHub repository and push this project to its `main` branch.
-2. In Streamlit Community Cloud, create an app from that repository.
-3. Choose `main` as the branch and `streamlit_app.py` as the entrypoint.
-4. No secrets or external services are required.
-
-The included GitHub Actions workflow runs the unit tests and compiles the application on pushes and pull requests.
+Streamlit Community Cloud deploys the `main` branch using `streamlit_app.py` as the entrypoint. No secrets or external services are required. The included GitHub Actions workflow runs the unit tests and compiles the application on pushes and pull requests.
 
 ## Visual direction
 
