@@ -220,6 +220,40 @@
       return result;
     }
 
+    function progressPayload() {
+      return {
+        stage: state.stage,
+        finalized: [...state.finalized],
+        placements: state.placements.map(placement => ({...placement})),
+        selected: state.selected,
+        attempts: [...state.attempts],
+        feedbackKinds: state.feedback.map(feedback => feedback ? feedback.kind : null),
+        shuffledAccountIds: state.shuffledAccounts.map(account => account.id),
+      };
+    }
+
+    function emitProgress() {
+      setComponentValue({completed: false, progress: progressPayload()});
+    }
+
+    function restoreProgress(progress) {
+      if (!progress) return;
+      state.stage = progress.stage;
+      state.finalized = [...progress.finalized];
+      state.placements = progress.placements.map(placement => ({...placement}));
+      state.selected = progress.selected;
+      state.attempts = [...progress.attempts];
+      state.feedback = progress.feedbackKinds.map((kind, index) => {
+        if (kind === "success") {
+          return {kind, messages: [`${statements[index].short} finalized correctly.`]};
+        }
+        if (kind === "review") {
+          return {kind, messages: validationMessages(index)};
+        }
+        return null;
+      });
+    }
+
     function allTiles() {
       const base = state.shuffledAccounts;
       const derived = state.args.derived || [];
@@ -232,8 +266,8 @@
       return allTiles().find(tile => tile.id === id);
     }
 
-    function zoneName(zoneId) {
-      const zone = statements[state.stage].zones.find(item => item[0] === zoneId);
+    function zoneName(zoneId, statementIndex = state.stage) {
+      const zone = statements[statementIndex].zones.find(item => item[0] === zoneId);
       return zone ? zone[1] : "that section";
     }
 
@@ -258,12 +292,14 @@
       state.selected = null;
       state.feedback[state.stage] = null;
       render();
+      emitProgress();
     }
 
     function toggleTile(id) {
       if (state.finalized[state.stage]) return;
       state.selected = state.selected === id ? null : id;
       render();
+      emitProgress();
     }
 
     function removeTile(id) {
@@ -271,17 +307,18 @@
       delete state.placements[state.stage][id];
       state.feedback[state.stage] = null;
       render();
+      emitProgress();
     }
 
-    function validateCurrent() {
-      const expected = statements[state.stage].expected;
-      const placements = state.placements[state.stage];
+    function validationMessages(statementIndex = state.stage) {
+      const expected = statements[statementIndex].expected;
+      const placements = state.placements[statementIndex];
       const incorrectZones = [...new Set(
         Object.entries(placements)
           .filter(([id, zone]) => expected[id] !== zone)
           .map(([, zone]) => zone)
       )];
-      const messages = incorrectZones.map(zone => `One of the balances in ${zoneName(zone)} doesn't belong there.`);
+      const messages = incorrectZones.map(zone => `One of the balances in ${zoneName(zone, statementIndex)} doesn't belong there.`);
       const correctCount = Object.entries(expected).filter(([id, zone]) => placements[id] === zone).length;
       const remaining = Object.keys(expected).length - correctCount;
       if (remaining > 0) {
@@ -291,7 +328,7 @@
     }
 
     function finalizeCurrent() {
-      const messages = validateCurrent();
+      const messages = validationMessages();
       state.attempts[state.stage] += 1;
       if (messages.length) {
         state.feedback[state.stage] = {kind: "review", messages};
@@ -300,6 +337,7 @@
         state.feedback[state.stage] = {kind: "success", messages: [`${statements[state.stage].short} finalized correctly.`]};
       }
       render();
+      emitProgress();
     }
 
     function resetCurrent() {
@@ -308,6 +346,7 @@
       state.selected = null;
       state.feedback[state.stage] = null;
       render();
+      emitProgress();
     }
 
     function selectStatement(index) {
@@ -317,6 +356,7 @@
         state.stage = index;
         state.selected = null;
         render(false);
+        emitProgress();
       }
     }
 
@@ -326,6 +366,7 @@
       if (next >= 0) state.stage = next;
       state.selected = null;
       render(false);
+      emitProgress();
     }
 
     function finishWorkspace() {
@@ -333,6 +374,7 @@
         completed: true,
         statementsFinalized: state.finalized.filter(Boolean).length,
         attempts: state.attempts.reduce((sum, value) => sum + value, 0),
+        progress: progressPayload(),
       });
     }
 
@@ -512,8 +554,17 @@
       if (!event.data || event.data.type !== "streamlit:render") return;
       state.args = event.data.args;
       if (!state.initialized) {
-        state.shuffledAccounts = shuffledCopy(state.args.accounts || []);
+        const initialProgress = state.args.initialProgress;
+        const accountsById = new Map((state.args.accounts || []).map(account => [account.id, account]));
+        const savedOrder = initialProgress?.shuffledAccountIds || [];
+        state.shuffledAccounts = savedOrder.length === accountsById.size
+          ? savedOrder.map(id => accountsById.get(id)).filter(Boolean)
+          : shuffledCopy(state.args.accounts || []);
+        restoreProgress(initialProgress);
         state.initialized = true;
+        render(false);
+        emitProgress();
+        return;
       }
       render();
     });

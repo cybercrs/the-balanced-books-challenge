@@ -17,6 +17,14 @@ from balanced_books.engine import (
     format_currency,
     statement_values_from_balances,
 )
+from balanced_books.progress import (
+    SNAPSHOT_PARAM,
+    activity_defaults,
+    reset_saved_progress,
+    restore_session_state,
+    sync_progress_query,
+    validate_component_progress,
+)
 from balanced_books.statement_builder_component import (
     render_scroll_to_top_component,
     render_statement_builder_component,
@@ -204,34 +212,61 @@ STAGE_LABELS = ("Welcome", "Transaction Inbox", "Equation Lab", "Statement Build
 
 
 def initialize_state() -> None:
-    defaults = {
-        "bbc_stage": 0,
-        "bbc_inbox_index": 0,
-        "bbc_inbox_responses": {},
-        "bbc_inbox_feedback": {},
-        "bbc_equation_index": 0,
-        "bbc_equation_responses": {},
-        "bbc_equation_feedback": {},
-        "bbc_statement_completion": None,
-        "bbc_scroll_token": 1,
-        "bbc_scroll_applied": 0,
-    }
-    for key, value in defaults.items():
+    if "bbc_restore_attempted" not in st.session_state:
+        restore_session_state(st.session_state, st.query_params.get(SNAPSHOT_PARAM))
+        st.session_state.bbc_restore_attempted = True
+    for key, value in activity_defaults().items():
         if key not in st.session_state:
             st.session_state[key] = value
 
 
 def restart_activity() -> None:
-    for key in list(st.session_state):
-        if key.startswith("bbc_") or key.startswith("stmt_") or key.startswith("inbox_choice_") or key.startswith("equation_choice_"):
-            del st.session_state[key]
-    initialize_state()
+    reset_saved_progress(st.session_state, st.query_params)
 
 
 def set_stage(stage: int) -> None:
     st.session_state.bbc_stage = stage
+    st.session_state.bbc_inbox_warning = None
+    st.session_state.bbc_equation_warning = None
     st.session_state.bbc_scroll_token += 1
-    st.rerun()
+
+
+def submit_inbox_answer(transaction_id: str) -> None:
+    transaction = next(item for item in TRANSACTIONS if item.id == transaction_id)
+    selected = st.session_state.get(f"inbox_choice_{transaction_id}")
+    if selected is None:
+        st.session_state.bbc_inbox_warning = transaction_id
+        return
+    st.session_state.bbc_inbox_warning = None
+    st.session_state.bbc_inbox_responses[transaction_id] = selected
+    st.session_state.bbc_inbox_feedback[transaction_id] = evaluate_event_type(transaction, selected)
+
+
+def advance_inbox() -> None:
+    if st.session_state.bbc_inbox_index == len(TRANSACTIONS) - 1:
+        set_stage(2)
+    else:
+        st.session_state.bbc_inbox_index += 1
+        st.session_state.bbc_inbox_warning = None
+
+
+def submit_equation_answer(transaction_id: str) -> None:
+    transaction = next(item for item in RECORDABLE_TRANSACTIONS if item.id == transaction_id)
+    selected = st.session_state.get(f"equation_choice_{transaction_id}")
+    if selected is None:
+        st.session_state.bbc_equation_warning = transaction_id
+        return
+    st.session_state.bbc_equation_warning = None
+    st.session_state.bbc_equation_responses[transaction_id] = selected
+    st.session_state.bbc_equation_feedback[transaction_id] = evaluate_equation_choice(transaction, selected)
+
+
+def advance_equation() -> None:
+    if st.session_state.bbc_equation_index == len(RECORDABLE_TRANSACTIONS) - 1:
+        set_stage(3)
+    else:
+        st.session_state.bbc_equation_index += 1
+        st.session_state.bbc_equation_warning = None
 
 
 def apply_pending_scroll_reset() -> None:
@@ -267,18 +302,22 @@ def render_stage_row() -> None:
             f'<div class="stage-pill {state_class}" aria-label="{status}{escape(label)}">{escape(label)}</div>'
         )
     st.markdown(f'<div class="stage-row">{"".join(pills)}</div>', unsafe_allow_html=True)
+    if 0 < active < len(STAGE_LABELS) - 1:
+        _, action_column = st.columns([5, 1])
+        action_column.button(
+            "Start over",
+            key="bbc_main_start_over",
+            use_container_width=True,
+            on_click=restart_activity,
+        )
 
 
 def render_sidebar() -> None:
     with st.sidebar:
         st.header("Activity guide")
-        st.write("Complete the rounds in order. Your work stays in this browser session and is not submitted or saved.")
+        st.write("Complete the rounds in order. Progress is saved in this page's URL so a refresh can recover it. The saved progress contains no identifying information and is not submitted.")
         st.markdown("**Accounting equation**")
         st.code("Assets = Liabilities + Stockholders' Equity", language=None)
-        st.divider()
-        if st.button("Restart activity", use_container_width=True):
-            restart_activity()
-            st.rerun()
 
 
 def render_event_card(transaction) -> None:
@@ -343,8 +382,13 @@ def render_welcome() -> None:
             """
         )
 
-    if st.button("Begin the challenge", type="primary", use_container_width=True):
-        set_stage(1)
+    st.button(
+        "Begin the challenge",
+        type="primary",
+        use_container_width=True,
+        on_click=set_stage,
+        args=(1,),
+    )
 
 
 def render_transaction_inbox() -> None:
@@ -360,31 +404,31 @@ def render_transaction_inbox() -> None:
     render_event_card(transaction)
 
     if feedback is None:
-        with st.form(f"inbox_form_{transaction.id}"):
-            selected = st.radio(
-                "Is this an accounting transaction?",
-                EVENT_TYPE_OPTIONS,
-                index=None,
-                key=f"inbox_choice_{transaction.id}",
-            )
-            submitted = st.form_submit_button("Check this event", type="primary", use_container_width=True)
-        if submitted:
-            if selected is None:
-                st.warning("Choose a classification before checking the event.")
-            else:
-                st.session_state.bbc_inbox_responses[transaction.id] = selected
-                st.session_state.bbc_inbox_feedback[transaction.id] = evaluate_event_type(transaction, selected)
-                st.rerun()
+        st.radio(
+            "Is this an accounting transaction?",
+            EVENT_TYPE_OPTIONS,
+            index=None,
+            key=f"inbox_choice_{transaction.id}",
+        )
+        st.button(
+            "Check this event",
+            type="primary",
+            use_container_width=True,
+            on_click=submit_inbox_answer,
+            args=(transaction.id,),
+        )
+        if st.session_state.bbc_inbox_warning == transaction.id:
+            st.warning("Choose a classification before checking the event.")
     else:
         render_choice_feedback(feedback)
         is_last = index == len(TRANSACTIONS) - 1
         next_label = "Continue to the Equation Lab" if is_last else "Next event"
-        if st.button(next_label, type="primary", use_container_width=True):
-            if is_last:
-                set_stage(2)
-            else:
-                st.session_state.bbc_inbox_index += 1
-                st.rerun()
+        st.button(
+            next_label,
+            type="primary",
+            use_container_width=True,
+            on_click=advance_inbox,
+        )
 
 
 def render_equation_snapshot(completed_count: int, changed_transaction=None) -> None:
@@ -459,23 +503,23 @@ def render_equation_lab() -> None:
     render_event_card(transaction)
 
     if feedback is None:
-        with st.form(f"equation_form_{transaction.id}"):
-            selected = st.radio(
-                "Which account effects are correct?",
-                transaction.choices,
-                index=None,
-                key=f"equation_choice_{transaction.id}",
-                format_func=lambda choice: choice.replace("$", r"\$"),
-            )
-            render_equation_snapshot(completed)
-            submitted = st.form_submit_button("Check the dual effect", type="primary", use_container_width=True)
-        if submitted:
-            if selected is None:
-                st.warning("Choose an account effect before checking the transaction.")
-            else:
-                st.session_state.bbc_equation_responses[transaction.id] = selected
-                st.session_state.bbc_equation_feedback[transaction.id] = evaluate_equation_choice(transaction, selected)
-                st.rerun()
+        st.radio(
+            "Which account effects are correct?",
+            transaction.choices,
+            index=None,
+            key=f"equation_choice_{transaction.id}",
+            format_func=lambda choice: choice.replace("$", r"\$"),
+        )
+        render_equation_snapshot(completed)
+        st.button(
+            "Check the dual effect",
+            type="primary",
+            use_container_width=True,
+            on_click=submit_equation_answer,
+            args=(transaction.id,),
+        )
+        if st.session_state.bbc_equation_warning == transaction.id:
+            st.warning("Choose an account effect before checking the transaction.")
     else:
         render_choice_feedback(feedback)
         if not feedback["correct"]:
@@ -487,12 +531,12 @@ def render_equation_lab() -> None:
         )
         is_last = index == len(RECORDABLE_TRANSACTIONS) - 1
         next_label = "Build the financial statements" if is_last else "Next transaction"
-        if st.button(next_label, type="primary", use_container_width=True):
-            if is_last:
-                set_stage(3)
-            else:
-                st.session_state.bbc_equation_index += 1
-                st.rerun()
+        st.button(
+            next_label,
+            type="primary",
+            use_container_width=True,
+            on_click=advance_equation,
+        )
 
 
 def render_statement_builder() -> None:
@@ -501,19 +545,26 @@ def render_statement_builder() -> None:
     st.write("Build each statement from the correct account balances. Place balances into the labeled sections and watch the statement totals update immediately.")
     st.info("On a computer, drag balances into place. You can also select a balance and choose “Place selected here,” which works with keyboards and touch devices.")
 
-    completion = st.session_state.bbc_statement_completion
-    if completion:
-        set_stage(4)
-        return
-
     result = render_statement_builder_component(
         balances_after(),
         statement_values_from_balances(balances_after()),
-        key="statement_builder_workspace_v6",
+        initial_progress=st.session_state.bbc_statement_progress,
+        key="statement_builder_workspace_v7",
     )
-    if result and result.get("completed"):
-        st.session_state.bbc_statement_completion = result
-        set_stage(4)
+    if result:
+        progress = validate_component_progress(result.get("progress"))
+        if progress is not None:
+            st.session_state.bbc_statement_progress = progress
+        if result.get("completed") and progress is not None:
+            st.session_state.bbc_statement_completion = {
+                "completed": True,
+                "statementsFinalized": result.get("statementsFinalized"),
+                "attempts": result.get("attempts"),
+            }
+            set_stage(4)
+            sync_progress_query(st.session_state, st.query_params)
+            # The component value arrives after this page was selected for rendering.
+            st.rerun()
 
 
 def statement_html(title: str, period: str, lines: list[tuple[str, int | None, str]]) -> str:
@@ -657,9 +708,12 @@ def render_debrief() -> None:
         unsafe_allow_html=True,
     )
 
-    if st.button("Start a new attempt", type="primary", use_container_width=True):
-        restart_activity()
-        st.rerun()
+    st.button(
+        "Start over",
+        type="primary",
+        use_container_width=True,
+        on_click=restart_activity,
+    )
 
 
 initialize_state()
@@ -676,3 +730,4 @@ stage_renderers = (
     render_debrief,
 )
 stage_renderers[st.session_state.bbc_stage]()
+sync_progress_query(st.session_state, st.query_params)

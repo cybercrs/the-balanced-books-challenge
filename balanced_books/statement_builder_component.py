@@ -27,9 +27,10 @@ def render_statement_builder_component(
     balances: dict[str, int],
     statement_values: dict[str, int],
     *,
+    initial_progress: dict[str, Any] | None,
     key: str,
 ) -> dict[str, Any] | None:
-    """Render the drag-and-drop workspace and return its completion payload."""
+    """Render the drag-and-drop workspace and return progress or completion."""
 
     account_specs = (
         ("cash", "Cash", "Cash", "asset", 0),
@@ -81,6 +82,7 @@ def render_statement_builder_component(
         derived=derived,
         company="Flyer Fuel Coffee Company",
         period="September 30",
+        initialProgress=initial_progress,
         key=key,
         default=None,
     )

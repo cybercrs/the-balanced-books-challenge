@@ -9,7 +9,7 @@ The Balanced Books Challenge is a student-facing Streamlit activity in which stu
 3. **Statement Builder** — drag correct account balances into a multi-step income statement, retained earnings calculation, and classified balance sheet while totals update live.
 4. **Debrief** — trace how accounting information moves from source events to financial statements.
 
-The app uses one approachable first-month case and provides item-level feedback after every submission. It does not collect, store, or transmit student names or responses.
+The app uses one approachable first-month case and provides item-level feedback after every submission. A compact, versioned snapshot in the page URL restores progress after a refresh. The snapshot is validated before use, contains no identifying information, and is never submitted to an external service.
 
 ## Project structure
 
@@ -21,11 +21,13 @@ The app uses one approachable first-month case and provides item-level feedback 
 │   ├── __init__.py
 │   ├── case_data.py
 │   ├── engine.py
+│   ├── progress.py
 │   ├── scroll_to_top_frontend/index.html
 │   ├── statement_builder_component.py
 │   └── statement_builder_frontend/index.html
 ├── tests/
-│   └── test_engine.py
+│   ├── test_engine.py
+│   └── test_progress.py
 ├── .python-version
 ├── requirements.txt
 └── streamlit_app.py
