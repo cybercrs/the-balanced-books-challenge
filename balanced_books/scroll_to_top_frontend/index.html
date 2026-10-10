@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Scroll to top</title></head>
+<body style="margin:0;height:0;overflow:hidden">
+  <script>
+    function post(type, extra = {}) {
+      window.parent.postMessage({isStreamlitMessage: true, type, ...extra}, "*");
+    }
+
+    function resetPosition(selector) {
+      const parentDocument = window.parent.document;
+      const container = parentDocument.querySelector('[data-testid="stAppViewContainer"]');
+      const main = parentDocument.querySelector('[data-testid="stMain"]');
+      const target = selector ? parentDocument.querySelector(selector) : null;
+      if (target) {
+        target.scrollIntoView({block: "start", inline: "nearest", behavior: "auto"});
+        if (container) container.scrollBy({top: -16, left: 0, behavior: "auto"});
+        if (main) main.scrollBy({top: -16, left: 0, behavior: "auto"});
+        post("streamlit:setFrameHeight", {height: 0});
+        return;
+      }
+      if (container) container.scrollTo({top: 0, left: 0, behavior: "auto"});
+      if (main) main.scrollTo({top: 0, left: 0, behavior: "auto"});
+      if (parentDocument.scrollingElement) parentDocument.scrollingElement.scrollTop = 0;
+      parentDocument.documentElement.scrollTop = 0;
+      parentDocument.body.scrollTop = 0;
+      window.parent.scrollTo({top: 0, left: 0, behavior: "auto"});
+      post("streamlit:setFrameHeight", {height: 0});
+    }
+
+    window.addEventListener("message", event => {
+      if (event.data?.type !== "streamlit:render") return;
+      const selector = event.data.args?.selector;
+      const reset = () => resetPosition(selector);
+      requestAnimationFrame(() => requestAnimationFrame(reset));
+      window.setTimeout(reset, 80);
+      window.setTimeout(reset, 240);
+    });
+
+    post("streamlit:componentReady", {apiVersion: 1});
+    post("streamlit:setFrameHeight", {height: 0});
+  </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+{
+  "checks": [
+    {
+      "name": "Actual stlite/Wasm runtime and subdirectory asset paths",
+      "status": "passed"
+    },
+    {
+      "name": "Complete inbox and equation rounds with preserved draft, wrong-answer feedback and original scoring",
+      "status": "passed"
+    },
+    {
+      "name": "Statement draft, tile order and keyboard placement survive outer review and refresh",
+      "status": "passed"
+    },
+    {
+      "name": "Finalized statement tabs are read-only, reject future views and preserve bookmark/refresh state",
+      "status": "passed"
+    },
+    {
+      "name": "Custom component initialization, resize/value messages, wrong checks, touch placement and three-statement completion",
+      "status": "passed"
+    },
+    {
+      "name": "Full read-only review preserves answers, drafts, attempts and earned progress",
+      "status": "passed"
+    },
+    {
+      "name": "Keyboard focus and Enter navigation",
+      "status": "passed"
+    },
+    {
+      "name": "390-pixel layout and compact 44-pixel touch targets",
+      "status": "passed"
+    },
+    {
+      "name": "Independent browser session starts fresh",
+      "status": "passed"
+    },
+    {
+      "name": "Future-view rejection and expected bookmark restoration",
+      "status": "passed"
+    },
+    {
+      "name": "Refresh and bookmarked review restore validated URL progress",
+      "status": "passed"
+    },
+    {
+      "name": "Start over and refresh remain at a fresh activity",
+      "status": "passed"
+    },
+    {
+      "name": "Invalid saved progress cannot reveal future pages",
+      "status": "passed"
+    },
+    {
+      "name": "No external requests, HTTP asset errors or browser execution errors",
+      "status": "passed"
+    }
+  ],
+  "console_errors": [],
+  "page_errors": [],
+  "external_requests": [],
+  "http_errors": [],
+  "not_run": [
+    "Hosted HTTPS UI (cloud proxy restriction)",
+    "Physical classroom device/browser matrix",
+    "Classroom simultaneous cold-start/capacity trial"
+  ],
+  "runtime": {
+    "python": "3.13.2",
+    "streamlit": "1.57.0",
+    "pyodide": "0.29.3"
+  },
+  "navigation_layout": {
+    "desktop": [
+      {
+        "x": 1044,
+        "y": 324.234375,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "x": 1096,
+        "y": 324.234375,
+        "width": 44,
+        "height": 44
+      }
+    ],
+    "narrow": [
+      {
+        "x": 278,
+        "y": 380.4375,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "x": 330,
+        "y": 380.4375,
+        "width": 44,
+        "height": 44
+      }
+    ]
+  }
+}

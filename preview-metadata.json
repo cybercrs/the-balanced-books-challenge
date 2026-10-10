@@ -1,0 +1,11 @@
+{
+  "repository": "cybercrs/the-balanced-books-challenge",
+  "source_branch": "rollout/stlite-browser-navigation",
+  "source_commit": "70aa88bccd159f52eb2d0825cf025c94a07a3e58",
+  "static_branch": "stlite-browser",
+  "main_commit": "ea92880a95243fb297168c9a9ce559c7dbbd1694",
+  "runtime": "stlite 1.8.1 / Streamlit 1.57.0 / Pyodide 0.29.3",
+  "activation": "Settings > Pages > Deploy from a branch > stlite-browser > / (root)",
+  "pages_existed_before_publish": false,
+  "hosted_ui_verified": false
+}
