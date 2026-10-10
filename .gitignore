@@ -5,3 +5,7 @@ __pycache__/
 .pytest_cache/
 .streamlit/secrets.toml
 
+
+# Generated browser runtime and raw local evidence
+browser/dist/
+browser/test-results/
