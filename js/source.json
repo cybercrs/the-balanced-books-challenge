@@ -1,0 +1,7 @@
+{
+  "repository": "cybercrs/the-balanced-books-challenge",
+  "source_branch": "rollout/native-browser",
+  "source_commit": "3daa62e498d0314f3aeb54a66515c51410d6bebc",
+  "existing_static_parent": "8c8b3f61c36fabbbdac0066f4796c66b840dc22e",
+  "entrypoint": "js/index.html"
+}
