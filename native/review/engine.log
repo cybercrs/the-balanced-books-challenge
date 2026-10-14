@@ -1,0 +1,15 @@
+✔ Every Python transaction prefix and final statement calculation matches native (2.184779ms)
+✔ All 24 original saved lesson pages import and retain current stage/drafts (70.57881ms)
+✔ Inbox/equation wrong feedback preserves original one-submission scoring and permits normal next (3.855103ms)
+✔ Three earned statement positions, exact progress in review and no future work (2.183226ms)
+✔ Untrusted future/score/finalization snapshots rejected; completion requires exact three statements (3.290062ms)
+✔ Drafts and randomized tile order remain in lossless native bookmarks (3.417862ms)
+✔ Forged legacy future statement work cannot infer an unearned view (2.129075ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 163.986218

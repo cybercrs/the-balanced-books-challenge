@@ -1,0 +1,24 @@
+test_case_uses_only_accounting_or_nonaccounting_classifications (test_engine.CaseDataTests.test_case_uses_only_accounting_or_nonaccounting_classifications) ... ok
+test_recordable_transactions_have_two_effects_and_four_choices (test_engine.CaseDataTests.test_recordable_transactions_have_two_effects_and_four_choices) ... ok
+test_statement_field_keys_are_unique (test_engine.CaseDataTests.test_statement_field_keys_are_unique) ... ok
+test_transaction_ids_are_unique (test_engine.CaseDataTests.test_transaction_ids_are_unique) ... ok
+test_accounting_equation_balances_after_every_recordable_transaction (test_engine.TransactionEngineTests.test_accounting_equation_balances_after_every_recordable_transaction) ... ok
+test_classification_feedback_does_not_reveal_specific_accounts (test_engine.TransactionEngineTests.test_classification_feedback_does_not_reveal_specific_accounts) ... ok
+test_equation_choice_feedback_is_item_specific (test_engine.TransactionEngineTests.test_equation_choice_feedback_is_item_specific) ... ok
+test_equipment_purchase_changes_asset_composition_in_running_balances (test_engine.TransactionEngineTests.test_equipment_purchase_changes_asset_composition_in_running_balances) ... ok
+test_event_type_feedback_is_item_specific (test_engine.TransactionEngineTests.test_event_type_feedback_is_item_specific) ... ok
+test_final_account_balances (test_engine.TransactionEngineTests.test_final_account_balances) ... ok
+test_final_statement_values (test_engine.TransactionEngineTests.test_final_statement_values) ... ok
+test_owner_distribution_is_an_accounting_transaction_not_an_expense (test_engine.TransactionEngineTests.test_owner_distribution_is_an_accounting_transaction_not_an_expense) ... ok
+test_statement_feedback_identifies_each_incorrect_line (test_engine.TransactionEngineTests.test_statement_feedback_identifies_each_incorrect_line) ... ok
+test_statement_field_answers_match_calculated_case_values (test_engine.TransactionEngineTests.test_statement_field_answers_match_calculated_case_values) ... ok
+test_completed_snapshot_restores_completion_status (test_progress.ProgressSnapshotTests.test_completed_snapshot_restores_completion_status) ... ok
+test_malformed_or_tampered_snapshots_are_rejected (test_progress.ProgressSnapshotTests.test_malformed_or_tampered_snapshots_are_rejected) ... ok
+test_mid_activity_restoration_recovers_page_choices_and_results (test_progress.ProgressSnapshotTests.test_mid_activity_restoration_recovers_page_choices_and_results) ... ok
+test_mid_statement_builder_progress_is_restored (test_progress.ProgressSnapshotTests.test_mid_statement_builder_progress_is_restored) ... ok
+test_start_over_replaces_saved_state (test_progress.ProgressSnapshotTests.test_start_over_replaces_saved_state) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.003s
+
+OK

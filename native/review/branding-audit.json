@@ -1,0 +1,14 @@
+{
+  "index.html": {
+    "sha256": "d418cdb23cddfe29faab3ec2a44c779aadc02265aa20d5d9d4472d3fa58b085d",
+    "provisional_branding_matches": []
+  },
+  "content.js": {
+    "sha256": "7df2b706df670bd867b6466af144540f2a9a20660b154d000da295669e0b9ba8",
+    "provisional_branding_matches": []
+  },
+  "app.js": {
+    "sha256": "475c142a991d00bcae4b9b6e383fc8737d8e36eb311a0aabab55713064b61770",
+    "provisional_branding_matches": []
+  }
+}

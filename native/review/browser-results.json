@@ -1,0 +1,95 @@
+{
+  "checks": [
+    {
+      "name": "Native /js/ cold initialization with forward locked",
+      "status": "passed"
+    },
+    {
+      "name": "inbox: complete original round, wrong first answer, corrected balances, first-pass scoring and draft review/refresh",
+      "status": "passed"
+    },
+    {
+      "name": "equation: complete original round, wrong first answer, corrected balances, first-pass scoring and draft review/refresh",
+      "status": "passed"
+    },
+    {
+      "name": "Native statement tabs and arrows preserve earned progress, reject future tabs and expose no edits or new hints in review",
+      "status": "passed"
+    },
+    {
+      "name": "Statement 1: keyboard/touch placement, partial-bookmark restoration, randomized order, validation and totals",
+      "status": "passed"
+    },
+    {
+      "name": "Statement 2: keyboard/touch placement, partial-bookmark restoration, randomized order, validation and totals",
+      "status": "passed"
+    },
+    {
+      "name": "Statement 3: keyboard/touch placement, partial-bookmark restoration, randomized order, validation and totals",
+      "status": "passed"
+    },
+    {
+      "name": "Complete native lesson preserves original first-pass scores and all three completed statements",
+      "status": "passed"
+    },
+    {
+      "name": "Review after the debrief exposes completed statements with no hidden hint or mutation controls",
+      "status": "passed"
+    },
+    {
+      "name": "All 24 original saved pages, including finalized statements, import with future-view rejection",
+      "status": "passed"
+    },
+    {
+      "name": "Final title and original teaching content; no iframe or Python runtime",
+      "status": "passed"
+    },
+    {
+      "name": "All reached pages review readonly; forward capped; progress token unchanged",
+      "status": "passed"
+    },
+    {
+      "name": "Keyboard focus ring and Enter navigation",
+      "status": "passed"
+    },
+    {
+      "name": "390px layout, no page overflow, 44px navigation touch targets",
+      "status": "passed"
+    },
+    {
+      "name": "Independent sessions start fresh",
+      "status": "passed"
+    },
+    {
+      "name": "Refresh/bookmark behavior matches original saving design",
+      "status": "passed"
+    },
+    {
+      "name": "Malformed/future bookmarks and reset remain fresh",
+      "status": "passed"
+    },
+    {
+      "name": "No external requests, asset failures, or browser execution errors",
+      "status": "passed"
+    }
+  ],
+  "console_errors": [],
+  "page_errors": [],
+  "external_requests": [],
+  "http_errors": [],
+  "hosted_ui_tested": false,
+  "measurement": {
+    "local_cold_navigation_to_ready_ms": 185.3,
+    "viewport": "1280x900",
+    "browser": "151.0.7922.173",
+    "browser_context": "new context; local loopback HTTP; no simulated network latency; cache empty",
+    "application_bytes": 225790,
+    "gzip_bytes_sum": 34284,
+    "capacity_claim": false
+  },
+  "not_run": [
+    "Hosted UI: known proxy denial",
+    "Physical classroom devices/network",
+    "Classroom concurrent capacity"
+  ]
+}

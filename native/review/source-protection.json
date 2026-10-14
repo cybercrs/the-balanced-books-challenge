@@ -1,0 +1,22 @@
+{
+  "main_baseline": "ea92880a95243fb297168c9a9ce559c7dbbd1694",
+  "all_original_files_preserved_except_additive_gitignore": true,
+  "sha256": {
+    ".github/workflows/tests.yml": "40bed11e8ea164971fcef301dd9733fd03171bbb559076dfc55bd4c23185e923",
+    ".python-version": "9ea280e4c89d3f302c1e8b3e5e7db91c46bec0fe761356ae90f32aaf0dbe0e8b",
+    ".streamlit/config.toml": "cec99933e9eabd3a6911c870ac09ed37555298e1c8a6e4514a15aa52d1176b6f",
+    "README.md": "989d818acb311fe39407920f715a050b9f36ea9602aa8acdb7f64cb697d7bccc",
+    "balanced_books/__init__.py": "acfd6b2c0cea3619d9e71ac945ab988da28358bd214d6e95d9d64da0bf4c0d80",
+    "balanced_books/case_data.py": "ed3d82a5e07cf358cbbc6a506c706e6d1097ffa8d060e807957f778272d29a7e",
+    "balanced_books/engine.py": "0c65da79ccbc752af0bf39845d4c9741e2f18706458c66b9a8ed8cb41ad153b6",
+    "balanced_books/progress.py": "bac6a5be922c01f73027f7bf1baf2d07bd7b8aa803497521df16d8c84d3907ec",
+    "balanced_books/scroll_to_top_frontend/index.html": "bcf8252ece1856df8cf6703ac6af98d8897317d73a73d9a36c46b16fe04c189e",
+    "balanced_books/statement_builder_component.py": "79d2f087af2ea0ba3ce84d42f7a94d33ec3a56cf39ebf397bbfafa46e1f4a277",
+    "balanced_books/statement_builder_frontend/index.html": "7447241cff9bcb57345668495a7a7197ee6f01504fadf923476141b47b5e1793",
+    "requirements.txt": "8430438e1124994dfd33345c59acb15201cfb3fcdcf7e083e8976b08318da310",
+    "streamlit_app.py": "4b77be8155ed30c014303de4dd13f12e430ef89a6002cbfb9fdde6e518c67db2",
+    "tests/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "tests/test_engine.py": "6303eba4c6a69738e3b79f1c4616ec79c2e06d54f1e48be6fa73091c083a8451",
+    "tests/test_progress.py": "15662e49e950d7433c87135ee5665ee00fb301e9bd2ae9ec7661c9d9af0e07ad"
+  }
+}
